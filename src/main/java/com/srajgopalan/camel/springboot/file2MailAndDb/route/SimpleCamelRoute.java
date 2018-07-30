@@ -9,13 +9,20 @@ import org.springframework.stereotype.Component;
 public class SimpleCamelRoute extends RouteBuilder {
 
     @Autowired
-    Environment environment;
+    private Environment environment;
 
     @Override
     public void configure() throws Exception {
         from("{{startRoute}}")
                 .log("Triggered the timer in environment: "+environment.getProperty("message") + "..")
-                .pollEnrich("{{fromRoute}}")
+
+                .choice()
+                    .when(header("env").isEqualTo("mock"))
+                        .log("This is a mock test, hence not running pollEnrich..")
+                    .otherwise()
+                        .pollEnrich("{{fromRoute}}")
+                .end()
+
                 .to("{{toRoute1}}");
     }
 }
