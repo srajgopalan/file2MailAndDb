@@ -1,11 +1,13 @@
 package com.srajgopalan.camel.springboot.file2MailAndDb.route;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 @Component
+@Slf4j
 public class SimpleCamelRoute extends RouteBuilder {
 
     @Autowired
@@ -13,6 +15,9 @@ public class SimpleCamelRoute extends RouteBuilder {
 
     @Override
     public void configure() throws Exception {
+
+        log.info("Starting route..");
+
         from("{{startRoute}}")
                 .log("Triggered the timer in environment: "+environment.getProperty("message") + "..")
 
@@ -24,5 +29,7 @@ public class SimpleCamelRoute extends RouteBuilder {
                 .end()
 
                 .to("{{toRoute1}}");
+
+        log.info("Ending route..");
     }
 }
