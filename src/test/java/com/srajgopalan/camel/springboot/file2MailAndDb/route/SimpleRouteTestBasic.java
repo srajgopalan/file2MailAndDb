@@ -3,6 +3,8 @@ package com.srajgopalan.camel.springboot.file2MailAndDb.route;
 import org.apache.camel.Exchange;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.test.spring.CamelSpringBootRunner;
+import org.apache.commons.io.FileUtils;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.io.File;
+import java.io.IOException;
 
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
@@ -28,6 +31,13 @@ public class SimpleRouteTestBasic {
 
     @Autowired
     Environment environment;
+
+    //ensures that the input and output directories are cleaned up before we start our testing
+    @BeforeClass
+    public static void startupClean() throws IOException {
+        FileUtils.cleanDirectory(new File("/tmp/camel/input"));
+        FileUtils.deleteDirectory(new File("/tmp/camel/output"));
+    }
 
     @Test
     public void simpleRouteTest() throws InterruptedException {
