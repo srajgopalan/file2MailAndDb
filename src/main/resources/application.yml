@@ -20,6 +20,17 @@ toRoute1: file:/tmp/camel/output
 ---
 
 spring:
+  profiles: mock
+
+message: mock
+
+startRoute: direct:input
+fromRoute: file:/tmp/camel/input?delete=true&readLock=none
+toRoute1: mock:output
+
+---
+
+spring:
   profiles: uat
 
 message: uat
