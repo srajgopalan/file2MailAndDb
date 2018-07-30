@@ -24,13 +24,13 @@ import static org.junit.Assert.assertTrue;
 @ActiveProfiles("dev")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 
-public class SimpleRouteTestBasic {
+public class TestSimpleRouteBasic {
 
     @Autowired
-    ProducerTemplate producerTemplate;
+    private ProducerTemplate producerTemplate;
 
     @Autowired
-    Environment environment;
+    private Environment environment;
 
     //ensures that the input and output directories are cleaned up before we start our testing
     @BeforeClass
@@ -40,7 +40,7 @@ public class SimpleRouteTestBasic {
     }
 
     @Test
-    public void simpleRouteTest() throws InterruptedException {
+    public void testFileMoveBasic() throws InterruptedException {
         String message = "this is a test message";
         String filename = "test.txt";
 
