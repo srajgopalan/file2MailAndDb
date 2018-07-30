@@ -24,7 +24,7 @@ import static org.junit.Assert.assertTrue;
 @ActiveProfiles("dev")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 
-public class TestSimpleRouteBasic {
+public class TestSimpleCamelRouteBasic {
 
     @Autowired
     private ProducerTemplate producerTemplate;
