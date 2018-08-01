@@ -1,6 +1,5 @@
 package com.srajgopalan.camel.springboot.file2MailAndDb.route;
 
-import org.apache.camel.CamelContext;
 import org.apache.camel.EndpointInject;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.component.mock.MockEndpoint;
@@ -21,8 +20,8 @@ import org.springframework.test.context.ActiveProfiles;
 @MockEndpoints
 public class TestSimpleCamelRouteMock {
 
-    @Autowired
-    private CamelContext context;
+//    @Autowired
+//    private CamelContext context;
 
     @Autowired
     private Environment environment;
@@ -30,10 +29,10 @@ public class TestSimpleCamelRouteMock {
     @Autowired
     private ProducerTemplate producerTemplate;
 
-    @Autowired
-    protected CamelContext createCamelContext() {
-        return context;
-    }
+//    @Autowired
+//    protected CamelContext createCamelContext() {
+//        return context;
+//    }
 
     @EndpointInject(uri = "{{toRoute1}}")
     private MockEndpoint mockEndpoint;
