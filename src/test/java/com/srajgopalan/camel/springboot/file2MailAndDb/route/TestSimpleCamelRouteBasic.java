@@ -43,8 +43,9 @@ public class TestSimpleCamelRouteBasic {
     @Test
     public void testFileMoveBasic() throws InterruptedException {
         String message = "Operation,SKU,Item,Price\n" +
-                "INSERT,100,Samsung TV,1000\n" +
-                "INSERT,101,LG TV,2000";
+                "INSERT,100,Samsung TV,500\n" +
+                "INSERT,101,LG TV,700";
+
         String filename = "test.txt";
 
         //inject the file
@@ -93,4 +94,67 @@ public class TestSimpleCamelRouteBasic {
 
         assertEquals(outputMessage, output);
     }
+
+    @Test
+    public void testFileMoveDbModify() throws InterruptedException, IOException {
+        String message = "Operation,SKU,Item,Price\n" +
+                "UPDATE,100,Samsung TV,600\n" +
+                "UPDATE,101,LG TV,800";
+        String filename = "test.txt";
+
+        //inject the file
+        producerTemplate.sendBodyAndHeader(environment.getProperty("fromRoute"), message,
+                Exchange.FILE_NAME, filename);
+
+        Thread.sleep(5000);
+
+        //now check if the success file exists
+
+        File outputDir = new File("/tmp/camel/output");
+
+        String outFileName = "success.txt";
+
+        File outputFile = new File("/tmp/camel/output/" + outFileName);
+
+        String outputMessage = "The data has been updated successfully!";
+        String output = new String(Files.readAllBytes(Paths.get("/tmp/camel/output/success.txt")));
+
+        assertTrue(outputFile.exists());
+
+        assertEquals(outputMessage, output);
+    }
+
+
+    @Test
+    public void testFileMoveDbRemove() throws InterruptedException, IOException {
+        String message = "Operation,SKU,Item,Price\n" +
+                "DELETE,100,Samsung TV,600\n" +
+                "DELETE,101,LG TV,800";
+        String filename = "test.txt";
+
+        //inject the file
+        producerTemplate.sendBodyAndHeader(environment.getProperty("fromRoute"), message,
+                Exchange.FILE_NAME, filename);
+
+        Thread.sleep(5000);
+
+        //now check if the success file exists
+
+        File outputDir = new File("/tmp/camel/output");
+
+        String outFileName = "success.txt";
+
+        File outputFile = new File("/tmp/camel/output/" + outFileName);
+
+        String outputMessage = "The data has been updated successfully!";
+        String output = new String(Files.readAllBytes(Paths.get("/tmp/camel/output/success.txt")));
+
+        assertTrue(outputFile.exists());
+
+        assertEquals(outputMessage, output);
+    }
+
+
+
+
 }

@@ -35,26 +35,61 @@ public class TestSimpleCamelRouteMock {
 //    }
 
     @EndpointInject(uri = "{{toRoute1}}")
-    private MockEndpoint mockEndpoint;
+    private MockEndpoint mockEndpoint1;
+
+    @EndpointInject(uri = "{{toRoute3}}")
+    private MockEndpoint mockEndpoint3;
+
 
     @Test
     public void testFileMoveMock() throws InterruptedException {
 
         String message = "Operation,SKU,Item,Price\n" +
-                "ADD,100,Samsung TV,1000\n" +
-                "ADD,101,LG TV,2000";
+                "ADD,100,Samsung TV,100\n" +
+                "ADD,101,LG TV,200";
 
         String filename = "test.txt";
 
         //MockEndpoint mockEndpoint = getMockEndpoint("{{toRoute1}}");
-        mockEndpoint.expectedBodiesReceived(message);
-        mockEndpoint.expectedMessageCount(1);
+        mockEndpoint1.expectedBodiesReceived(message);
+        mockEndpoint1.expectedMessageCount(1);
 
         //inject the file
         producerTemplate.sendBodyAndHeader(environment.getProperty("startRoute"), message,
                 "env",environment.getProperty("spring.profiles.active") );
 
-        mockEndpoint.assertIsSatisfied();
+        mockEndpoint1.assertIsSatisfied();
+    }
+
+    @Test
+    public void testFileMoveandDbMock() throws InterruptedException {
+
+        // In this test we are mocking the components including the DB so we
+        // will only test that the output file (success file) is created
+        // after the DB insert step
+
+        String message = "Operation,SKU,Item,Price\n" +
+                "ADD,100,Samsung TV,100\n" +
+                "ADD,101,LG TV,200";
+
+        String filename = "test.txt";
+
+        mockEndpoint1.expectedBodiesReceived(message);
+        mockEndpoint1.expectedMessageCount(1);
+
+        String outputMessage = "The data has been updated successfully!";
+
+        mockEndpoint3.expectedBodiesReceived(outputMessage);
+        mockEndpoint3.expectedMessageCount(1);
+
+        //inject the file
+        producerTemplate.sendBodyAndHeader(environment.getProperty("startRoute"), message,
+                "env",environment.getProperty("spring.profiles.active") );
+
+        mockEndpoint1.assertIsSatisfied();
+        mockEndpoint3.assertIsSatisfied();
+
+
     }
 }
 
