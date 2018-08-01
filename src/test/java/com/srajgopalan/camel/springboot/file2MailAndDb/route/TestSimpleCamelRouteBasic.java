@@ -15,9 +15,10 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @RunWith(CamelSpringBootRunner.class)
 @SpringBootTest
@@ -41,7 +42,9 @@ public class TestSimpleCamelRouteBasic {
 
     @Test
     public void testFileMoveBasic() throws InterruptedException {
-        String message = "this is a test message";
+        String message = "Operation,SKU,Item,Price\n" +
+                "INSERT,100,Samsung TV,1000\n" +
+                "INSERT,101,LG TV,2000";
         String filename = "test.txt";
 
         //inject the file
@@ -54,11 +57,40 @@ public class TestSimpleCamelRouteBasic {
 
         File outputDir = new File("/tmp/camel/output");
 
-        File outputFile = new File( "/tmp/camel/output/" + filename);
+        File outputFile = new File("/tmp/camel/output/" + filename);
 
         assertTrue(outputDir.exists());
         assertNotEquals(0, outputDir.listFiles());
         assertTrue(outputFile.exists());
 
+    }
+
+    @Test
+    public void testFileMoveDbInsert() throws InterruptedException, IOException {
+        String message = "Operation,SKU,Item,Price\n" +
+                "INSERT,100,Samsung TV,500\n" +
+                "INSERT,101,LG TV,700";
+        String filename = "test.txt";
+
+        //inject the file
+        producerTemplate.sendBodyAndHeader(environment.getProperty("fromRoute"), message,
+                Exchange.FILE_NAME, filename);
+
+        Thread.sleep(5000);
+
+        //now check if the success file exists
+
+        File outputDir = new File("/tmp/camel/output");
+
+        String outFileName = "success.txt";
+
+        File outputFile = new File("/tmp/camel/output/" + outFileName);
+
+        String outputMessage = "The data has been updated successfully!";
+        String output = new String(Files.readAllBytes(Paths.get("/tmp/camel/output/success.txt")));
+
+        assertTrue(outputFile.exists());
+
+        assertEquals(outputMessage, output);
     }
 }

@@ -40,7 +40,10 @@ public class TestSimpleCamelRouteMock {
     @Test
     public void testFileMoveMock() throws InterruptedException {
 
-        String message = "this is a test message";
+        String message = "Operation,SKU,Item,Price\n" +
+                "ADD,100,Samsung TV,1000\n" +
+                "ADD,101,LG TV,2000";
+
         String filename = "test.txt";
 
         //MockEndpoint mockEndpoint = getMockEndpoint("{{toRoute1}}");

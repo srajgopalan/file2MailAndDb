@@ -10,12 +10,19 @@ camel:
 
 spring:
   profiles: dev
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    jdbc-url: jdbc:postgresql://localhost:5432/srajgopalanDB
+    username: postgres
+    password: postgres
 
 message: dev
 
 startRoute: timer:myTimer?period=10
 fromRoute: file:/tmp/camel/input?delete=true&readLock=none
 toRoute1: file:/tmp/camel/output
+toRoute2: jdbc:dataSource
+toRoute3: file:/tmp/camel/output?fileName=success.txt
 
 ---
 
@@ -32,22 +39,34 @@ toRoute1: mock:output
 
 spring:
   profiles: uat
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc://localhost:5432/srajgopalanDB
+    username: postgres
+    password: postgres
 
 message: uat
 
 startRoute: timer:myTimer?period=10s
 fromRoute: file:/tmp/camel/input?delete=true&readLock=none
 toRoute1: file:/tmp/camel/output
+toRoute2: jdbc:dataSource
 
 ---
 
 spring:
   profiles: prd
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc://localhost:5432/srajgopalanDB
+    username: postgres
+    password: postgres
+
 
 message: prd
 
 startRoute: timer:myTimer?period=10s
 fromRoute: file:/tmp/camel/input?delete=true&readLock=none
 toRoute1: file:/tmp/camel/output
-
+toRoute2: jdbc:dataSource
 ---
