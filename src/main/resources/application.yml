@@ -34,6 +34,8 @@ message: mock
 startRoute: direct:input
 fromRoute: file:/tmp/camel/input?delete=true&readLock=none
 toRoute1: mock:output
+toRoute2: mock:output2
+toRoute3: mock:output3
 
 ---
 
@@ -47,10 +49,11 @@ spring:
 
 message: uat
 
-startRoute: timer:myTimer?period=10s
+startRoute: timer:myTimer?period=10
 fromRoute: file:/tmp/camel/input?delete=true&readLock=none
 toRoute1: file:/tmp/camel/output
 toRoute2: jdbc:dataSource
+toRoute3: file:/tmp/camel/output?fileName=success.txt
 
 ---
 
@@ -65,8 +68,10 @@ spring:
 
 message: prd
 
-startRoute: timer:myTimer?period=10s
+startRoute: timer:myTimer?period=10
 fromRoute: file:/tmp/camel/input?delete=true&readLock=none
 toRoute1: file:/tmp/camel/output
 toRoute2: jdbc:dataSource
+toRoute3: file:/tmp/camel/output?fileName=success.txt
+
 ---
