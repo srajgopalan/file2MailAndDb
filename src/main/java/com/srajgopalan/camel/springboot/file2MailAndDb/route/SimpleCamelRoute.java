@@ -1,12 +1,15 @@
 package com.srajgopalan.camel.springboot.file2MailAndDb.route;
 
 import com.srajgopalan.camel.springboot.file2MailAndDb.domain.Item;
+import com.srajgopalan.camel.springboot.file2MailAndDb.exception.DataException;
 import com.srajgopalan.camel.springboot.file2MailAndDb.process.SqlProcessor;
 import com.srajgopalan.camel.springboot.file2MailAndDb.process.SuccessProcessor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.dataformat.bindy.csv.BindyCsvDataFormat;
 import org.apache.camel.spi.DataFormat;
+import org.postgresql.util.PSQLException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.env.Environment;
@@ -37,6 +40,13 @@ public class SimpleCamelRoute extends RouteBuilder {
     public void configure() throws Exception {
 
         log.info("Starting route..");
+
+        //define a custom error handler
+        errorHandler(deadLetterChannel("log:errorInRoute?level=ERROR&showProperties=true").maximumRedeliveries(3).redeliveryDelay(3000).useExponentialBackOff().backOffMultiplier(2));
+
+        onException(PSQLException.class).log(LoggingLevel.ERROR, "PSQL exception caught in route..").maximumRedeliveries(3).redeliveryDelay(3000);
+
+        onException(DataException.class).log(LoggingLevel.ERROR, "Data Exception caught in route..");
 
         from("{{startRoute}}")
                 .log("Triggered the timer in environment: "+environment.getProperty("message") + "..")

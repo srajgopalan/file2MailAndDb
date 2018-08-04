@@ -38,6 +38,7 @@ public class TestSimpleCamelRouteBasic {
     public static void startupClean() throws IOException {
         FileUtils.cleanDirectory(new File("/tmp/camel/input"));
         FileUtils.deleteDirectory(new File("/tmp/camel/output"));
+        FileUtils.deleteDirectory(new File("/tmp/camel/input/error"));
     }
 
     @Test
@@ -154,7 +155,36 @@ public class TestSimpleCamelRouteBasic {
         assertEquals(outputMessage, output);
     }
 
+    @Test
+    public void testFileMoveDbInsert_Exception() throws InterruptedException, IOException {
+        String message = "Operation,SKU,Item,Price\n" +
+                "INSERT,,Samsung TV,500\n"
+                +
+                "INSERT,101,LG TV,700";
+        String filename = "exception.txt";
 
+        //inject the file
+        producerTemplate.sendBodyAndHeader(environment.getProperty("fromRoute"), message,
+                Exchange.FILE_NAME, filename);
+
+        Thread.sleep(5000);
+
+        // now check if the output file exists (as the exception is thrown, subsequent insert wont success
+        // and the success file will not be created
+
+        File outputDir = new File("/tmp/camel/output");
+
+        File outputFile = new File("/tmp/camel/output/" + filename);
+
+        assertTrue(outputFile.exists());
+
+        File errorDir = new File("/tmp/camel/input/error");
+
+        File errorFile = new File("/tmp/camel/input/error" + filename);
+
+        assertTrue(outputDir.exists());
+        assertTrue(outputFile.exists());
+    }
 
 
 }
