@@ -2,6 +2,7 @@ package com.srajgopalan.camel.springboot.file2MailAndDb.route;
 
 import com.srajgopalan.camel.springboot.file2MailAndDb.domain.Item;
 import com.srajgopalan.camel.springboot.file2MailAndDb.exception.DataException;
+import com.srajgopalan.camel.springboot.file2MailAndDb.process.MailProcessor;
 import com.srajgopalan.camel.springboot.file2MailAndDb.process.SqlProcessor;
 import com.srajgopalan.camel.springboot.file2MailAndDb.process.SuccessProcessor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,17 +25,20 @@ public class SimpleCamelRoute extends RouteBuilder {
     @Autowired
     private Environment environment;
 
-    DataFormat dataFormat = new BindyCsvDataFormat(Item.class);
+    private DataFormat dataFormat = new BindyCsvDataFormat(Item.class);
 
     @Autowired
     @Qualifier("dataSource")
-    DataSource dataSource;
+    private DataSource dataSource;
 
     @Autowired
-    SqlProcessor sqlProcessor;
+    private SqlProcessor sqlProcessor;
 
     @Autowired
-    SuccessProcessor successProcessor;
+    private SuccessProcessor successProcessor;
+
+    @Autowired
+    private MailProcessor mailProcessor;
 
     @Override
     public void configure() throws Exception {
@@ -46,7 +50,7 @@ public class SimpleCamelRoute extends RouteBuilder {
 
         onException(PSQLException.class).log(LoggingLevel.ERROR, "PSQL exception caught in route..").maximumRedeliveries(3).redeliveryDelay(3000);
 
-        onException(DataException.class).log(LoggingLevel.ERROR, "Data Exception caught in route..");
+        onException(DataException.class).log(LoggingLevel.ERROR, "Data Exception caught in route..").process(mailProcessor);
 
         from("{{startRoute}}")
                 .log("Triggered the timer in environment: "+environment.getProperty("message") + "..")

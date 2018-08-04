@@ -1,5 +1,6 @@
 package com.srajgopalan.camel.springboot.file2MailAndDb.route;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.test.spring.CamelSpringBootRunner;
@@ -24,6 +25,7 @@ import static org.junit.Assert.*;
 @SpringBootTest
 @ActiveProfiles("dev")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@Slf4j
 
 public class TestSimpleCamelRouteBasic {
 
@@ -36,6 +38,7 @@ public class TestSimpleCamelRouteBasic {
     //ensures that the input and output directories are cleaned up before we start our testing
     @BeforeClass
     public static void startupClean() throws IOException {
+        log.info("In cleanup function..");
         FileUtils.cleanDirectory(new File("/tmp/camel/input"));
         FileUtils.deleteDirectory(new File("/tmp/camel/output"));
         FileUtils.deleteDirectory(new File("/tmp/camel/input/error"));

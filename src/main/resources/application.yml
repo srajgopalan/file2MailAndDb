@@ -15,6 +15,16 @@ spring:
     jdbc-url: jdbc:postgresql://localhost:5432/srajgopalanDB
     username: postgres
     password: postgres
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: <username>
+    password: <password>
+    properties.mail.smtp.auth: true
+    properties.mail.smtp.starttls.enable: true
+
+mailFrom: <from>
+mailTo: <to>
 
 message: dev
 table: items
@@ -29,6 +39,16 @@ toRoute3: file:/tmp/camel/output?fileName=success.txt
 
 spring:
   profiles: mock
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: <username>
+    password: <password>
+    properties.mail.smtp.auth: true
+    properties.mail.smtp.starttls.enable: true
+
+mailFrom: <from>
+mailTo: <to>
 
 message: mock
 table: items
@@ -48,6 +68,16 @@ spring:
     url: jdbc://localhost:5432/srajgopalanDB
     username: postgres
     password: postgres
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: <username>
+    password: <password>
+    properties.mail.smtp.auth: true
+    properties.mail.smtp.starttls.enable: true
+
+mailFrom: <from>
+mailTo: <to>
 
 message: uat
 table: items
@@ -67,7 +97,16 @@ spring:
     url: jdbc://localhost:5432/srajgopalanDB
     username: postgres
     password: postgres
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: <username>
+    password: <password>
+    properties.mail.smtp.auth: true
+    properties.mail.smtp.starttls.enable: true
 
+mailFrom: <from>
+mailTo: <to>
 
 message: prd
 table: items
