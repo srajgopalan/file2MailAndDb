@@ -28,7 +28,13 @@ public class MailProcessor implements org.apache.camel.Processor {
         simpleMailMessage.setFrom(environment.getProperty("mailFrom"));
         simpleMailMessage.setTo(environment.getProperty("mailTo"));
         simpleMailMessage.setSubject("Exception in camel route for file2MailAndDb");
-        simpleMailMessage.setText("Exception raised in camel route: "+e.getMessage() + "\n" + "\n" + e.getStackTrace());
+
+        log.info("Exception Raised in Route: "+ e.getMessage());
+
+        if (e.getMessage() != null) {
+
+            simpleMailMessage.setText("Exception raised in camel route: " + e.getMessage() + "\n");
+        }
 
         log.info("about to send mail to: "+ environment.getProperty("mailTo") + " with exception details");
 
