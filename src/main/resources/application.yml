@@ -5,6 +5,16 @@ spring:
 camel:
   springboot:
     shutdowntimeout: 5
+  health.indicator.enabled: true
+
+management:
+  security:
+    enabled: false
+  endpoint:
+    health:
+      show-details: "ALWAYS"
+
+healthUrl: "http://localhost:8080/actuator/health"
 
 ---
 
@@ -34,6 +44,7 @@ fromRoute: file:/tmp/camel/input?delete=true&readLock=none&moveFailed=error
 toRoute1: file:/tmp/camel/output
 toRoute2: jdbc:dataSource
 toRoute3: file:/tmp/camel/output?fileName=success.txt
+healthRoute: timer:health?period=10s
 
 ---
 
@@ -58,6 +69,7 @@ fromRoute: file:/tmp/camel/input?delete=true&readLock=none
 toRoute1: mock:output
 toRoute2: mock:output2
 toRoute3: mock:output3
+healthRoute: direct:health
 
 ---
 
@@ -87,6 +99,7 @@ fromRoute: file:/tmp/camel/input?delete=true&readLock=none
 toRoute1: file:/tmp/camel/output
 toRoute2: jdbc:dataSource
 toRoute3: file:/tmp/camel/output?fileName=success.txt
+healthRoute: timer:health?period=10s
 
 ---
 
@@ -116,5 +129,6 @@ fromRoute: file:/tmp/camel/input?delete=true&readLock=none
 toRoute1: file:/tmp/camel/output
 toRoute2: jdbc:dataSource
 toRoute3: file:/tmp/camel/output?fileName=success.txt
+healthRoute: timer:health?period=10s
 
 ---
