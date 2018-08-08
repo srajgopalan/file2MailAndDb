@@ -46,13 +46,13 @@ public class SimpleCamelRoute extends RouteBuilder {
         log.info("Starting route..");
 
         //define a custom error handler
-        errorHandler(deadLetterChannel("log:errorInRoute?level=ERROR&showProperties=true").maximumRedeliveries(3).redeliveryDelay(3000).useExponentialBackOff().backOffMultiplier(2));
+        //errorHandler(deadLetterChannel("log:errorInRoute?level=ERROR&showProperties=true").maximumRedeliveries(3).redeliveryDelay(3000).useExponentialBackOff().backOffMultiplier(2));
 
         onException(PSQLException.class).log(LoggingLevel.ERROR, "PSQL exception caught in route..").maximumRedeliveries(3).redeliveryDelay(3000);
 
         onException(DataException.class).log(LoggingLevel.ERROR, "Data Exception caught in route..").process(mailProcessor);
 
-        from("{{startRoute}}")
+        from("{{startRoute}}").routeId("mainRoute").routeDescription("Route from File to DB")
                 .log("Triggered the timer in environment: "+environment.getProperty("message") + "..")
 
                 .choice()
