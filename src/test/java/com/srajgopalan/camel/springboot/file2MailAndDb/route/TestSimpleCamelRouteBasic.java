@@ -163,7 +163,7 @@ public class TestSimpleCamelRouteBasic {
         String message = "Operation,SKU,Item,Price\n" +
                 "INSERT,,Samsung TV,500\n"
                 +
-                "INSERT,101,LG TV,700";
+                "INSERT,102,LG TV,700";
         String filename = "exception.txt";
 
         //inject the file
@@ -172,14 +172,16 @@ public class TestSimpleCamelRouteBasic {
 
         Thread.sleep(5000);
 
-        // now check if the output file exists (as the exception is thrown, subsequent insert wont success
-        // and the success file will not be created
+        // now check if the output file exists (as the exception is thrown, but the subsequent insert is actually successful
+        // and the success file is created
 
         File outputDir = new File("/tmp/camel/output");
 
         File outputFile = new File("/tmp/camel/output/" + filename);
 
         assertTrue(outputFile.exists());
+
+        //an error file is created the moment an error is thrown due to our route settings for the input directory
 
         File errorDir = new File("/tmp/camel/input/error");
 
